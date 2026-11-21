@@ -6,6 +6,7 @@ export default function OperationalHome() {
         <p className="mt-2 text-muted">Masuk melalui autentikasi operasional akan mengikuti role dan cabang aktif.</p>
         <a className="button-primary mt-6 inline-flex" href="/app/settings">Pengaturan organisasi</a>
         <a className="button-secondary ml-3" href="/app/catalog">Katalog</a>
+        <a className="button-secondary ml-3" href="/app/customers">Pelanggan dan hewan</a>
       </section>
     </main>
   );
