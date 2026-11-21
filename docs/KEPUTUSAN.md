@@ -10,3 +10,4 @@
 | Tes | Vitest, Playwright, pgTAP | Unit, e2e, dan database |
 | State | Server Components/Actions, tanpa state global | Sesuai brief |
 | Uang | Integer satuan Rupiah | Mencegah float |
+| M01 akses | RLS dengan helper `is_owner`, `has_permission`, dan `is_assigned_to_branch` | Akses diuji dan ditegakkan di database |

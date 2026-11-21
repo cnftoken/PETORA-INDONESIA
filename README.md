@@ -19,6 +19,12 @@ pnpm dev
 ```
 
 Isi variabel Supabase dari keluaran `pnpm db:start`. Supabase lokal tersedia pada `http://127.0.0.1:54323`.
+Untuk membuat perusahaan, cabang, dan akun Owner pertama:
+
+```bash
+SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY=<service-role-key> \
+  node scripts/setup.mjs nama-perusahaan owner@email.test "Nama Owner" "Kata sandi minimal 10 karakter"
+```
 
 ## Pemeriksaan
 

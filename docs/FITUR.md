@@ -4,7 +4,7 @@ Status awal semua fitur adalah Belum dimulai. Daftar mengikuti 72 fitur M01-M12 
 
 | Modul | Fitur | Status |
 |---|---|---|
-| M01 | M01-F01 sampai M01-F08: profil dan setup, cabang, pengguna, role, permission, penugasan, pengaturan, audit | Belum dimulai |
+| M01 | M01-F01 sampai M01-F08: profil dan setup, cabang, pengguna, role, permission, penugasan, pengaturan, audit | Dikerjakan; database, setup Owner, cabang, pengaturan, dan audit aktif |
 | M02 | M02-F01 sampai M02-F05: pelanggan, pencarian lintas cabang, profil hewan, timeline, lampiran | Belum dimulai |
 | M03 | M03-F01 sampai M03-F06: kunjungan, antrean, pemeriksaan, resep, status, riwayat | Belum dimulai |
 | M04 | M04-F01 sampai M04-F08: entri, diagnosis, lampiran, penguncian, addendum, vaksin, booster, berbagi portal | Belum dimulai |

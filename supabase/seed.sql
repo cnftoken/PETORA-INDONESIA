@@ -3,3 +3,5 @@ insert into public.branches (code, name, timezone) values
   ('MKS01', 'PETORA Makassar', 'Asia/Makassar'),
   ('JYP01', 'PETORA Jayapura', 'Asia/Jayapura')
 on conflict (code) do nothing;
+insert into public.company (name) values ('PETORA')
+on conflict do nothing;
