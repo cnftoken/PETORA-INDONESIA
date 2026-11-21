@@ -32,6 +32,13 @@ select 'PT-JKT-000001', id, 'Milo', 'Anjing', 'Golden Retriever', 'male', true, 
 from public.customers where phone_normalized = '+6281234567890'
 on conflict (patient_number) do nothing;
 
+insert into public.stock_batches (branch_id, product_id, batch_number, expiry_date, quantity, purchase_price)
+select b.id, p.id, 'BATCH-2026-001', '2027-06-30', 25, 18000
+from public.branches b
+cross join public.products p
+where b.code = 'JKT01' and p.sku = 'OBT-001'
+on conflict (branch_id, product_id, batch_number) do nothing;
+
 insert into public.animals (patient_number, owner_id, name, species, breed, sex, sterilized, estimated_age_months, color, status)
 select 'PT-MKS-000001', id, 'Coco', 'Kucing', 'Domestic', 'female', true, 18, 'Putih abu-abu', 'active'
 from public.customers where phone_normalized = '+6285612345678'

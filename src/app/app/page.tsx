@@ -7,6 +7,7 @@ export default function OperationalHome() {
         <a className="button-primary mt-6 inline-flex" href="/app/settings">Pengaturan organisasi</a>
         <a className="button-secondary ml-3" href="/app/catalog">Katalog</a>
         <a className="button-secondary ml-3" href="/app/customers">Pelanggan dan hewan</a>
+        <a className="button-secondary ml-3" href="/app/inventory">Inventori</a>
       </section>
     </main>
   );
