@@ -1,0 +1,48 @@
+# Lihat https://git-scm.com/docs/gitignore untuk detail
+
+# Next.js
+/.next
+/out
+
+# Build dan hasil
+dist
+build
+*.env
+.env.local
+.env.*.local
+
+# pnpm
+.pnpm-store
+node_modules
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Supabase
+supabase/.temp
+supabase/.branches/
+supabase/.pgsql
+
+# Test coverage
+coverage
+vitest-report
+playwright-report
+test-results
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

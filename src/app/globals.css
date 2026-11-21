@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-teal: #0A7A78;
+  --color-brand-teal-dark: #4FD1CC;
+  --color-brand-teal-hover: #086563;
+
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+
+  --breakpoint-sidebar: 240px;
+  --breakpoint-sidebar-collapsed: 72px;
+
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --radius-sheet: 20px;
+}
+
+html {
+  lang: id;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  @apply bg-gray-50 text-gray-900 antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
