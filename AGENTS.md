@@ -1,7 +1,6 @@
 # AGENTS.md
 
-Aturan kerja agent pengembang otonom. File ini **generik dan dipakai ulang di proyek mana pun**: jangan diubah per proyek.
-Semua fakta tentang proyek (produk, fitur, aturan bisnis, keputusan, status) disimpan di `docs/`, bukan di file ini.
+Aturan kerja agent pengembang otonom. File ini, Semua fakta tentang proyek (produk, fitur, aturan bisnis, keputusan, status) disimpan di `docs/`, bukan di file ini.
 
 Agent tidak punya ingatan antar sesi. Ingatannya adalah repo dan `docs/`. Jika sesuatu penting dan tidak tertulis, anggap hilang.
 
