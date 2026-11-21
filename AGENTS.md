@@ -1,4 +1,131 @@
+# AGENTS.md: PETORA
 
+File ini mengatur cara agent pengembang bekerja di repositori PETORA. Apa yang dibangun ada di `BRIEF.md`. File ini mengatur bagaimana pekerjaan dilakukan. Fakta yang berubah selama pengembangan (status, keputusan, aturan turunan, masalah) ada di `docs/`.
+
+Agent tidak punya ingatan antar sesi. Ingatannya adalah repositori dan `docs/`. Jika sesuatu penting dan tidak tertulis, anggap hilang.
+
+---
+
+## 0. Prinsip kerja
+
+1. **Bukti, bukan klaim.** Sesuatu dianggap berfungsi hanya setelah dijalankan dan hasilnya diperiksa. Kode yang terlihat benar belum berarti selesai.
+2. **Tuntas.** Satu fitur selesai penuh sebelum pindah ke fitur lain. Tidak ada implementasi setengah jadi yang dibiarkan di cabang utama.
+3. **Akar masalah, bukan gejala.** Jangan menambal. Temukan penyebabnya lalu perbaiki di sana.
+4. **Sederhana.** Solusi paling sederhana yang benar. Tidak ada kerumitan untuk kebutuhan hipotetis.
+5. **Jujur.** Laporkan apa yang terverifikasi, apa yang diasumsikan, dan apa yang belum diperiksa. Tes yang gagal dan kasus yang dilewati tidak boleh disembunyikan.
+6. **Aman saat ragu.** Jika brief punya celah atau konflik, pilih opsi yang paling aman: membatasi akses, mencegah kehilangan data, mempertahankan jejak audit. Catat di `docs/KEPUTUSAN.md`, lalu lanjut.
+7. **Otonom.** Putuskan sendiri, catat alasannya, lanjutkan. Bertanya hanya sesuai bagian 16.
+
+---
+
+## 1. Sumber kebenaran dan urutan prioritas
+
+| Pertanyaan | Sumber | Catatan |
+|---|---|---|
+| Apa yang dibangun, untuk siapa | `BRIEF.md` | Spesifikasi final. Agent tidak mengubahnya. |
+| Bagaimana cara mengerjakannya | `AGENTS.md` (file ini) | |
+| Apa yang sedang terjadi sekarang | `docs/STATUS.md` | Harus selalu sesuai kenyataan. |
+| Aturan bisnis turunan | `docs/ATURAN-BISNIS.md` | Mengutip BR-001 sampai BR-025 dari brief dan menambah detail. Tidak boleh menyimpang dari brief. |
+| Keputusan yang diambil agent | `docs/KEPUTUSAN.md` | Setiap celah brief yang diputuskan dicatat di sini. |
+
+Urutan prioritas jika ada konflik: instruksi langsung dari Owner dalam sesi, lalu `BRIEF.md`, lalu `AGENTS.md`, lalu `docs/`. Tidak ada yang boleh melanggar bagian 6 (keamanan dan isolasi) atau bagian 7 (aturan uang dan stok) meskipun diminta.
+
+---
+
+## 2. Awal dan akhir setiap sesi
+
+**Awal sesi:**
+1. Jalankan `git status` dan `git log -10 --oneline`.
+2. Baca `docs/STATUS.md`, lalu `BRIEF.md` bagian yang relevan dengan tugas berikutnya, lalu `docs/KONVENSI.md`.
+3. Jalankan pemeriksaan dasar: lint, type check, tes, dan build. Hasilnya harus sesuai catatan di `STATUS.md`. Jika tidak, buka masalah dulu (bagian 14).
+4. Urutan prioritas pekerjaan: **masalah kritis dan tinggi** lalu **tumpukan jeda** lalu **"Sedang dikerjakan"** lalu **"Langkah berikutnya"**.
+5. Lanjutkan dari titik berhenti yang tercatat. Jangan mengulang dari awal.
+
+**Akhir sesi:** lihat bagian 17.
+
+---
+
+## 3. Ingatan: struktur `docs/`
+
+| File | Isi | Diperbarui kapan |
+|---|---|---|
+| `PRODUK.md` | Ringkasan produk, dua area fungsi, sasaran terukur, arah visual (ringkasan dari BRIEF bagian 1 dan 11) | Jarang. Hanya jika ada keputusan produk baru |
+| `FITUR.md` | 72 fitur dalam 12 modul: ID, deskripsi, kriteria selesai, status, lokasi kode, nama tes | Tiap fitur berubah status |
+| `ATURAN-BISNIS.md` | BR-001 sampai BR-025 beserta kondisi, hasil, pengecualian, dan status tes otomatis | Saat aturan diimplementasi atau ditemukan detail baru |
+| `KEPUTUSAN.md` | Keputusan teknis dan celah brief yang diputuskan agent: apa, kenapa, alternatif yang ditolak | Tiap keputusan |
+| `KONVENSI.md` | Gaya kode, penamaan, perintah penting, cara menjalankan tiap jenis tes | Saat konvensi berubah |
+| `MASALAH.md` | Riwayat masalah yang sudah tuntas: gejala, akar masalah, perbaikan, pencegahan | Tiap masalah tuntas |
+| `STATUS.md` | Ingatan kerja (format di bawah) | Tiap tugas dan tiap jeda |
+| `DEPLOYMENT.md` | Langkah rilis, pemulihan dari pencadangan Supabase, rollback. Hanya dicatat setelah dicoba di staging | Fase 12 dan setiap rilis |
+
+**Format `STATUS.md` (tetap):**
+- **Gambaran besar:** 3 sampai 5 kalimat tentang kondisi proyek dan fase aktif.
+- **Fase aktif:** nomor fase, persentase fitur selesai, dan blokir yang diketahui.
+- **Sedang dikerjakan:** tugas, branch, titik berhenti, langkah konkret berikutnya.
+- **Tumpukan jeda:** tiap butir berisi apa, mengapa dijeda, branch atau commit, dan cara melanjutkan.
+- **Masalah terbuka:** ID, tingkat keparahan, gejala, hipotesis, yang sudah dicoba beserta hasilnya.
+- **Blokir akses:** akun atau kredensial yang belum tersedia (GitHub, Supabase staging dan produksi, Vercel, SMTP) dan dampaknya.
+- **Pekerjaan terakhir:** 5 entri terbaru (apa, file utama, hasil tes).
+- **Langkah berikutnya:** maksimal 5, berurutan.
+
+Tulis untuk pembaca yang belum pernah melihat proyek ini. `STATUS.md` yang basi merusak seluruh kerja.
+
+---
+
+## 4. Urutan kerja
+
+### 4.1 Fase
+
+Kerjakan fase 0 sampai 12 sesuai BRIEF bagian 14, berurutan. Setiap fase selesai penuh sebelum fase berikutnya dimulai. Agent tidak menunggu persetujuan antar fase.
+
+Fase selesai jika:
+- Semua fitur di fase itu memenuhi definisi selesai (bagian 15).
+- Setiap aturan BR yang terkait punya tes otomatis yang lolos.
+- `FITUR.md`, `ATURAN-BISNIS.md`, dan `STATUS.md` diperbarui di commit yang sama.
+
+### 4.2 Fitur
+
+Urutan kerja dalam satu fase: skema dan fungsi database lebih dulu, lalu tes database (pgTAP), lalu logika server (RPC dan Server Action), lalu antarmuka, lalu tes integrasi dan e2e untuk alur kritis. Tes ditulis sebelum kode yang diuji, lalu dipastikan gagal dulu.
+
+### 4.3 Jika waktu atau konteks tidak cukup
+
+Kecilkan cakupan, jangan kirim versi setengah jadi. Satu fitur utuh lebih baik daripada tiga fitur parsial. Sisa cakupan dicatat di `STATUS.md` sebagai langkah berikutnya.
+
+---
+
+## 5. Struktur repositori (wajib)
+
+Struktur ini mengikuti BRIEF bagian 12. Penyimpangan hanya boleh jika framework memaksanya, dan wajib dicatat di `KEPUTUSAN.md`.
+---
+petora/
+├── AGENTS.md · BRIEF.md · README.md · .env.example
+├── package.json · pnpm-lock.yaml · konfigurasi (ts, eslint, prettier, vitest, playwright)
+├── .github/workflows/ci.yml
+├── docs/ # ingatan (bagian 3)
+├── supabase/
+│ ├── migrations/ # skema, RLS, fungsi (stok, tagihan, transfer, nomor)
+│ ├── tests/ # tes pgTAP: RLS dan fungsi database
+│ ├── seed.sql # data contoh, hanya lokal dan staging
+│ └── config.toml
+├── src/
+│ ├── app/
+│ │ ├── app/ # area operasional, rute /app
+│ │ └── portal/ # area pemilik hewan, rute /portal
+│ ├── modules/ # satu folder per modul
+│ │ ├── organization/ customers/ clinic/ medical-records/
+│ │ ├── inpatient/ catalog/ petshop/ inventory/
+│ │ └── procurement/ billing/ reports/ owner-portal/
+│ ├── lib/
+│ │ ├── supabase/ # klien browser dan server
+│ │ ├── access/ # cek permission untuk UI (bukan penegakan)
+│ │ ├── money/ # format Rupiah dan helper bilangan bulat
+│ │ └── time/ # konversi zona waktu cabang
+│ ├── ui/ # sistem desain: token dan komponen dasar
+│ └── types/ # tipe hasil generate dari skema database
+├── e2e/ # Playwright: alur kritis
+└── scripts/ # setup awal, seed, cek env, generate tipe
+
+---
 ### 5.1 Aturan per folder
 
 - **`src/modules/<nama>/`** berisi `components/`, `actions/`, `queries/`, `schemas/`, dan `tests/`. Modul tidak mengimpor berkas internal modul lain. Berbagi hanya lewat `src/lib`, `src/ui`, atau `src/types`.
