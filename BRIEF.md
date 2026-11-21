@@ -578,11 +578,3 @@ Semua yang tertulis di dokumen ini sudah diputuskan. Agent tidak bertanya tentan
 **Agent memutuskan sendiri tanpa bertanya:** versi dependensi, nama internal, struktur kode di dalam modul, detail desain visual di dalam sistem desain bagian 11, skema tabel dan indeks, serta cara menyelesaikan celah di brief (aturan di bagian atas dokumen).
 
 Saat berhenti, agent menyiapkan semuanya terlebih dahulu: keadaan tercatat di `STATUS.md`, pilihan beserta rekomendasi dan alasannya, dan pekerjaan lain yang tidak bergantung tetap dilanjutkan.
-
-## 18. Risiko
-
-- **Yang paling ditakutkan:** kebocoran data antar cabang atau ke pemilik hewan yang salah, stok dan tagihan yang tidak akurat, rekam medis yang berubah tanpa jejak, dan perhitungan pajak yang keliru.
-- **Bagian paling rumit:** hak akses berlapis dengan pengecualian lintas cabang untuk riwayat medis; tagihan terpadu dengan diskon, PPN, pembulatan, dan pembayaran sebagian; stok batch dengan konkurensi dan transfer antar cabang; zona waktu banyak cabang; portal yang hanya menampilkan data yang dibagikan.
-- **Lingkup besar:** 72 fitur berisiko menghasilkan implementasi dangkal. Mitigasi: fase dengan definisi selesai yang ketat dan tes untuk setiap aturan.
-- **Performa RLS:** kebijakan akses yang kompleks memperlambat query. Mitigasi: indeks yang tepat, pola kebijakan seragam, uji beban di Fase 12.
-- **Pembayaran manual:** tanpa verifikasi otomatis, salah catat oleh kasir adalah risiko nyata. Mitigasi: referensi pembayaran, jejak audit, dan laporan per metode untuk rekonsiliasi.
