@@ -9,7 +9,7 @@ Status awal semua fitur adalah Belum dimulai. Daftar mengikuti 72 fitur M01-M12 
 | M03 | M03-F01 sampai M03-F06: kunjungan, antrean, pemeriksaan, resep, status, riwayat | Belum dimulai |
 | M04 | M04-F01 sampai M04-F08: entri, diagnosis, lampiran, penguncian, addendum, vaksin, booster, berbagi portal | Belum dimulai |
 | M05 | M05-F01 sampai M05-F06: check-in, kandang, catatan harian, pemberian obat, deposit, check-out | Belum dimulai |
-| M06 | M06-F01 sampai M06-F04: produk, layanan, kategori dan harga, status pajak | Belum dimulai |
+| M06 | M06-F01 sampai M06-F04: produk, layanan, kategori dan harga, status pajak | Selesai; skema, riwayat harga, seed, halaman katalog, dan tes pgTAP aktif |
 | M07 | M07-F01 sampai M07-F03: katalog jual, penjualan retail, retur | Belum dimulai |
 | M08 | M08-F01 sampai M08-F07: stok, batch, penyesuaian, kartu stok, transfer, peringatan, opname | Belum dimulai |
 | M09 | M09-F01 sampai M09-F03: pemasok, pesanan pembelian, penerimaan | Belum dimulai |
