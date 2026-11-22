@@ -30,7 +30,7 @@
 | ID | Fitur | Deskripsi | Kriteria selesai | Status | Lokasi kode | Nama tes |
 |---|---|---|---|---|---|---|
 | M03-F01 | Pendaftaran kunjungan | Pilih pelanggan dan hewan, keluhan, dokter tujuan, jenis layanan. Nomor kunjungan saat pendaftaran (BR-022). Status awal "terdaftar". | Kunjungan terdaftar, nomor diberikan | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
-| M03-F02 | Antrean | Daftar menunggu per cabang dan dokter, panggil, lewati. Realtime tanpa muat ulang. | Antrean berfungsi, realtime | belum | `src/modules/clinic/` | `br-001-branch-isolation` |
+| M03-F02 | Antrean | Daftar menunggu per cabang dan dokter, panggil, lewati. Realtime tanpa muat ulang. | Antrean berfungsi, realtime | siap | `src/modules/clinic/` | `m03-f02-antrean` |
 | M03-F03 | Pemeriksaan dan tindakan | Dokter memulai pemeriksaan, status "diperiksa", tagihan draft otomatis. Tindakan masuk draft dengan salinan harga/pajak. Tandai "selesai". | Pemeriksaan dan tagihan draft | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 | M03-F04 | Resep dan obat | Dokter menulis resep dari katalog (dosis, aturan pakai, jumlah). Obat masuk draft tagihan. Stok berkurang saat finalisasi. Jika tidak cukup, ditolak. | Resep masuk draft, stok dicek saat finalisasi | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 | M03-F05 | Perubahan status kunjungan | Alur: terdaftar → menunggu → diperiksa → selesai. Pembatalan hanya sebelum diperiksa, wajib beralasan. | Status berubah sesuai alur | siap | `src/modules/clinic/` | `m03-f05-status-transition` |
