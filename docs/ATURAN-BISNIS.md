@@ -6,7 +6,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 |---|---|---|---|---|
 | BR-001 | Isolasi cabang | `br-001-branch-isolation` | lolos (pgTAP) | 0 |
 | BR-002 | Akses berbasis role dan permission | `br-002-role-permission` | lolos (pgTAP) | 0 |
-| BR-003 | Pelanggan, hewan, dan riwayat medis terpusat lintas cabang | `br-003-cross-branch-medical` | belum | 3 |
+| BR-003 | Pelanggan, hewan, dan riwayat medis terpusat lintas cabang | `br-003-cross-branch-medical` | lolos (pgTAP) | 3 |
 | BR-004 | Rekam medis hanya ditulis Dokter, entri final terkunci | `br-004-medical-entry-lock` | belum | 8 |
 | BR-005 | Visibilitas ke portal hanya entri yang dibagikan | `br-005-portal-visibility` | belum | 11 |
 | BR-006 | Stok per cabang tidak boleh minus | `br-006-no-negative-stock` | belum | 4 |

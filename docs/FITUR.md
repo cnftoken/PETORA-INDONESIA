@@ -19,9 +19,9 @@
 
 | ID | Fitur | Deskripsi | Kriteria selesai | Status | Lokasi kode | Nama tes |
 |---|---|---|---|---|---|---|
-| M02-F01 | Data pelanggan | Nama, telepon (wajib, internasional), email, alamat, catatan. Nomor telepon sama tidak bisa didaftarkan dua kali. | Pelanggan bisa didaftar, telepon unik | belum | `src/modules/customers/` | `br-003-cross-branch-medical` |
-| M02-F02 | Pencarian lintas cabang | Cari nama, telepon, nama hewan, nomor pasien. Hasil < 1 detik pada 50.000 data. | Pencarian cepat, lintas cabang | belum | `src/modules/customers/` | `br-003-cross-branch-medical` |
-| M02-F03 | Profil hewan | Nomor pasien unik, nama, jenis, ras, kelamin, steril, lahir/umur, warna/ciri, microchip, foto, status, pemilik. Satu pemilik banyak hewan. | Profil hewan lengkap, transfer pemilik | belum | `src/modules/customers/` | `br-003-cross-branch-medical` |
+| M02-F01 | Data pelanggan | Nama, telepon (wajib, internasional), email, alamat, catatan. Nomor telepon sama tidak bisa didaftarkan dua kali. | Pelanggan bisa didaftar, telepon unik | siap | `src/modules/customers/` | `br-003-cross-branch-medical` |
+| M02-F02 | Pencarian lintas cabang | Cari nama, telepon, nama hewan, nomor pasien. Hasil < 1 detik pada 50.000 data. | Pencarian cepat, lintas cabang | siap | `src/modules/customers/` | `br-003-cross-branch-medical` |
+| M02-F03 | Profil hewan | Nomor pasien unik, nama, jenis, ras, kelamin, steril, lahir/umur, warna/ciri, microchip, foto, status, pemilik. Satu pemilik banyak hewan. | Profil hewan lengkap, transfer pemilik | siap | `src/modules/customers/` | `br-003-cross-branch-medical` |
 | M02-F04 | Timeline riwayat | Kronologi kunjungan, tindakan, vaksin, rawat inap, tagihan lintas cabang, tiap baris cabang asal. | Timeline ditampilkan per cabang asal | belum | `src/modules/customers/` | `br-003-cross-branch-medical` |
 | M02-F05 | Lampiran dan foto hewan | Storage, JPG/PNG/PDF, maks 10 MB, tautan bertanda signed berumur pendek, divalidasi server dan klien. | Lampiran tersimpan dan diakses aman | belum | `src/modules/customers/` | `br-003-cross-branch-medical` |
 
@@ -134,4 +134,4 @@
 | M12-F06 | Tagihan | Daftar dan rincian tagihan final: baris, PPN, pembulatan, pembayaran, sisa. Tanpa tombol bayar. Belum lunas: "Pembayaran dilakukan di klinik". Bisa dicetak. | Tagihan di portal tanpa bayar | belum | `src/modules/owner-portal/` | `br-019-portal-read-only` |
 | M12-F07 | Perkembangan rawat inap | Status terkini, catatan harian dan foto yang dibagikan. | Perkembangan rawat inap di portal | belum | `src/modules/owner-portal/` | `br-005-portal-visibility` |
 
-**Total: 72 fitur, 12 fitur status `siap` (M01: 8, M06: 4), 60 fitur status `belum`.**
+**Total: 72 fitur, 15 fitur status `siap` (M01: 8, M06: 4, M02: 3), 57 fitur status `belum`.**
