@@ -32,7 +32,7 @@
 | M03-F01 | Pendaftaran kunjungan | Pilih pelanggan dan hewan, keluhan, dokter tujuan, jenis layanan. Nomor kunjungan saat pendaftaran (BR-022). Status awal "terdaftar". | Kunjungan terdaftar, nomor diberikan | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 | M03-F02 | Antrean | Daftar menunggu per cabang dan dokter, panggil, lewati. Realtime tanpa muat ulang. | Antrean berfungsi, realtime | belum | `src/modules/clinic/` | `br-001-branch-isolation` |
 | M03-F03 | Pemeriksaan dan tindakan | Dokter memulai pemeriksaan, status "diperiksa", tagihan draft otomatis. Tindakan masuk draft dengan salinan harga/pajak. Tandai "selesai". | Pemeriksaan dan tagihan draft | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
-| M03-F04 | Resep dan obat | Dokter menulis resep dari katalog (dosis, aturan pakai, jumlah). Obat masuk draft tagihan. Stok berkurang saat finalisasi. Jika tidak cukup, ditolak. | Resep masuk draft, stok dicek saat finalisasi | belum | `src/modules/clinic/` | `br-006-no-negative-stock`, `br-024-stock-decrement` |
+| M03-F04 | Resep dan obat | Dokter menulis resep dari katalog (dosis, aturan pakai, jumlah). Obat masuk draft tagihan. Stok berkurang saat finalisasi. Jika tidak cukup, ditolak. | Resep masuk draft, stok dicek saat finalisasi | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 | M03-F05 | Perubahan status kunjungan | Alur: terdaftar → menunggu → diperiksa → selesai. Pembatalan hanya sebelum diperiksa, wajib beralasan. | Status berubah sesuai alur | belum | `src/modules/clinic/` | `br-001-branch-isolation` |
 | M03-F06 | Daftar dan riwayat kunjungan | Cari dan filter tanggal (zona cabang), status, dokter, pelanggan. | Daftar kunjungan dengan filter | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 
@@ -81,10 +81,10 @@
 
 | ID | Fitur | Deskripsi | Kriteria selesai | Status | Lokasi kode | Nama tes |
 |---|---|---|---|---|---|---|
-| M08-F01 | Stok per cabang | Saldo per produk per cabang dengan pencarian. Saldo sama dengan jumlah mutasi, diuji. | Saldo stok akurat per cabang | belum | `src/modules/inventory/` | `br-006-no-negative-stock` |
-| M08-F02 | Batch dan kedaluwarsa | Penerimaan mencatat batch dan kedaluwarsa. Pengurangan FEFO. Batch kedaluwarsa tidak bisa dijual. | Batch dan kedaluwarsa tercatat | belum | `src/modules/inventory/` | `br-007-fefo` |
+| M08-F01 | Stok per cabang | Saldo per produk per cabang dengan pencarian. Saldo sama dengan jumlah mutasi, diuji. | Saldo stok akurat per cabang | siap | `src/modules/inventory/` | `br-006-no-negative-stock` |
+| M08-F02 | Batch dan kedaluwarsa | Penerimaan mencatat batch dan kedaluwarsa. Pengurangan FEFO. Batch kedaluwarsa tidak bisa dijual. | Batch dan kedaluwarsa tercatat | siap | `src/modules/inventory/` | `br-007-fefo` |
 | M08-F03 | Penyesuaian stok | Koreksi dengan alasan. Gudang ajukan, Supervisor/Owner setujui. Tidak bisa stok minus. | Penyesuaian stok dengan approval | belum | `src/modules/inventory/` | `br-006-no-negative-stock` |
-| M08-F04 | Kartu stok | Riwayat mutasi per produk dan batch dengan saldo berjalan. Tiap baris menunjuk dokumen sumber. | Kartu stok ditampilkan | belum | `src/modules/inventory/` | `br-024-stock-decrement` |
+| M08-F04 | Kartu stok | Riwayat mutasi per produk dan batch dengan saldo berjalan. Tiap baris menunjuk dokumen sumber. | Kartu stok ditampilkan | siap | `src/modules/inventory/` | `br-024-stock-decrement` |
 | M08-F05 | Transfer antar cabang | Stok asal berkurang saat dikirim, tujuan bertambah saat diterima, batch/kedaluwarsa terbawa, dalam perjalanan tercatat, selisih ditinjau. | Transfer stok berfungsi | belum | `src/modules/inventory/` | `br-017-stock-transfer` |
 | M08-F06 | Peringatan stok minimum dan kedaluwarsa | Daftar produk di bawah stok minimum dan batch kedaluwarsa dalam hari (default 30). Dashboard Gudang, Supervisor, Owner. | Peringatan stok ditampilkan | belum | `src/modules/inventory/` | `br-007-fefo` |
 | M08-F07 | Stock opname | Sesi penghitungan fisik per cabang. Produk terkunci sampai sesi ditutup. Selisih jadi penyesuaian setelah disetujui. | Stock opname berjalan | belum | `src/modules/inventory/` | `br-023-stock-opname` |
@@ -134,4 +134,4 @@
 | M12-F06 | Tagihan | Daftar dan rincian tagihan final: baris, PPN, pembulatan, pembayaran, sisa. Tanpa tombol bayar. Belum lunas: "Pembayaran dilakukan di klinik". Bisa dicetak. | Tagihan di portal tanpa bayar | belum | `src/modules/owner-portal/` | `br-019-portal-read-only` |
 | M12-F07 | Perkembangan rawat inap | Status terkini, catatan harian dan foto yang dibagikan. | Perkembangan rawat inap di portal | belum | `src/modules/owner-portal/` | `br-005-portal-visibility` |
 
-**Total: 72 fitur, 18 fitur status `siap` (M01: 8, M06: 4, M02: 3, M03: 3), 54 fitur status `belum`.**
+**Total: 72 fitur, 22 fitur status `siap` (M01: 8, M06: 4, M02: 3, M03: 4, M08: 3), 50 fitur status `belum`.**

@@ -11,17 +11,20 @@ export function PrescriptionForm({
   initialData,
   examinations,
   products,
+  branchId,
   onSubmit,
 }: {
   initialData?: Partial<PrescriptionInput>;
   examinations: { id: string }[];
   products: { id: string; sku: string; name: string }[];
+  branchId?: string;
   onSubmit: (data: PrescriptionInput) => void;
 }) {
   const form = useForm<PrescriptionInput>({
     resolver: zodResolver(prescriptionSchema),
     defaultValues: {
       examination_id: initialData?.examination_id ?? '',
+      branch_id: branchId ?? initialData?.branch_id ?? '',
       product_id: initialData?.product_id ?? undefined,
       medicine_name: initialData?.medicine_name ?? '',
       dosage: initialData?.dosage ?? '',

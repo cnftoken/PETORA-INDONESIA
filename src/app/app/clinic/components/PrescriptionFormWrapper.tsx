@@ -9,10 +9,12 @@ export function PrescriptionFormWrapper({
   initialData,
   examinations,
   products,
+  branchId,
 }: {
   initialData?: PrescriptionInput;
   examinations: any[];
   products: any[];
+  branchId?: string;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -44,6 +46,7 @@ export function PrescriptionFormWrapper({
         initialData={initialData}
         examinations={examinations}
         products={products}
+        branchId={branchId}
         onSubmit={onSubmit}
       />
     </>

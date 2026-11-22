@@ -36,6 +36,7 @@ export type ExaminationInput = z.infer<typeof examinationSchema>;
 
 export const prescriptionSchema = z.object({
   examination_id: z.string().uuid('Pemeriksaan wajib dipilih'),
+  branch_id: z.string().uuid('Cabang wajib dipilih'),
   product_id: z.string().uuid().optional().nullish(),
   medicine_name: z.string().min(1, 'Nama obat wajib diisi'),
   dosage: z.string().min(1, 'Dosis wajib diisi'),

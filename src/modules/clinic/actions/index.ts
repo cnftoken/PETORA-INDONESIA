@@ -102,6 +102,18 @@ export async function updateExamination(id: string, input: Partial<ExaminationIn
 export async function createPrescription(input: PrescriptionInput) {
   const validated = prescriptionSchema.parse(input);
   const supabase = await createServerClient();
+
+  // Stok dikurangi saat finalisasi (BR-024) melalui fungsi database decrement_stock_fifo
+  if (validated.product_id) {
+    const { error: rpcError } = await supabase.rpc('decrement_stock_fifo', {
+      p_branch_id: validated.branch_id,
+      p_product_id: validated.product_id,
+      p_quantity: validated.quantity,
+      p_reference: `RSEP-${validated.examination_id}`,
+    });
+    if (rpcError) throw new Error(rpcError.message);
+  }
+
   const { data, error } = await supabase
     .from('prescriptions')
     .insert(validated)

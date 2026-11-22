@@ -9,7 +9,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-003 | Pelanggan, hewan, dan riwayat medis terpusat lintas cabang | `br-003-cross-branch-medical` | lolos (pgTAP) | 3 |
 | BR-004 | Rekam medis hanya ditulis Dokter, entri final terkunci | `br-004-medical-entry-lock` | belum | 8 |
 | BR-005 | Visibilitas ke portal hanya entri yang dibagikan | `br-005-portal-visibility` | belum | 11 |
-| BR-006 | Stok per cabang tidak boleh minus | `br-006-no-negative-stock` | belum | 4 |
+| BR-006 | Stok per cabang tidak boleh minus | `m08-f01-f02-stock` | lolos (pgTAP) | 5 |
 | BR-007 | FEFO (kedaluwarsa terdekat dulu) | `br-007-fefo` | lolos (pgTAP) | 2 |
 | BR-008 | Uang bilangan bulat Rupiah, tanpa float | `br-008-integer-money` | belum | 5 |
 | BR-009 | Tagihan terpadu per kunjungan / rawat inap / retail | `m03-f01-f06-klinik` | lolos (pgTAP) | 4 |
@@ -27,7 +27,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-021 | Pembulatan tagihan dapat dikonfigurasi, baris terpisah | `br-021-rounding` | lolos (pgTAP) | 1 |
 | BR-022 | Penomoran dokumen unik dan berurutan per cabang per jenis | `m03-f01-f06-klinik` | lolos (pgTAP) | 4 |
 | BR-023 | Stock opname: produk terkunci sampai sesi ditutup, selisih disetujui | `br-023-stock-opname` | belum | 4 |
-| BR-024 | Saat stok berkurang: finalisasi tagihan / pemberian obat / retur mengembalikan | `br-024-stock-decrement` | belum | 5 |
+| BR-024 | Saat stok berkurang: finalisasi tagihan / pemberian obat / retur mengembalikan | `m08-f01-f02-stock` | lolos (pgTAP) | 5 |
 | BR-025 | Diskon hanya per baris, persen atau nominal, wajib beralasan | `br-025-discount` | belum | 5 |
 
 **Keterangan status tes:** `belum` = belum ada tes otomatis. Aturan dengan status "belum" tidak boleh ditandai fase selesai (AGENTS.md bagian 15).
