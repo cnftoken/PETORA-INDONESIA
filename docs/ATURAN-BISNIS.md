@@ -23,8 +23,8 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-017 | Transfer stok antar cabang: draft → dikirim → diterima, selisih ditinjau | `br-017-stock-transfer` | belum | 4 |
 | BR-018 | Pembayaran dicatat manual oleh kasir, satu metode, tidak tercatat ganda | `br-018-manual-payment` | belum | 5 |
 | BR-019 | Portal hanya untuk melihat, tidak ada tombol bayar | `br-019-portal-read-only` | belum | 11 |
-| BR-020 | PPN dapat dikonfigurasi, basis poin, tagihan menyimpan salinan | `br-020-vat` | belum | 1 |
-| BR-021 | Pembulatan tagihan dapat dikonfigurasi, baris terpisah | `br-021-rounding` | belum | 1 |
+| BR-020 | PPN dapat dikonfigurasi, basis poin, tagihan menyimpan salinan | `br-020-vat` | lolos (pgTAP) | 1 |
+| BR-021 | Pembulatan tagihan dapat dikonfigurasi, baris terpisah | `br-021-rounding` | lolos (pgTAP) | 1 |
 | BR-022 | Penomoran dokumen unik dan berurutan per cabang per jenis | `br-022-document-numbering` | belum | 5 |
 | BR-023 | Stock opname: produk terkunci sampai sesi ditutup, selisih disetujui | `br-023-stock-opname` | belum | 4 |
 | BR-024 | Saat stok berkurang: finalisasi tagihan / pemberian obat / retur mengembalikan | `br-024-stock-decrement` | belum | 5 |

@@ -81,7 +81,6 @@ create table user_roles (
   created_at timestamptz not null default now(),
   constraint user_roles_unique unique (user_id, role_id, branch_id)
 );
-
 create table user_permissions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references users(id) on delete cascade,
@@ -91,7 +90,6 @@ create table user_permissions (
   created_at timestamptz not null default now(),
   constraint user_permissions_unique unique (user_id, permission_id, branch_id)
 );
-
 create table branch_settings (
   id uuid primary key default gen_random_uuid(),
   branch_id uuid not null references branches(id) on delete cascade,
@@ -311,7 +309,15 @@ create policy users_select on users
   );
 
 create policy users_insert on users for insert to public with check (true);
-create policy users_update on users for update to public using (users.id = current_app_user_id());
+create policy users_update on users for update to public using (
+  users.id = current_app_user_id()
+  or exists (
+    select 1 from user_roles ur
+    join roles r on r.id = ur.role_id
+    where ur.user_id = current_app_user_id()
+      and r.code = 'owner'
+  )
+);
 
 -- User branch assignments: Owner semua; pengguna melihat assignment sendiri
 create policy user_branch_assignments_select on user_branch_assignments
