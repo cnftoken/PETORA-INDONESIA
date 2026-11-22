@@ -10,7 +10,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-004 | Rekam medis hanya ditulis Dokter, entri final terkunci | `br-004-medical-entry-lock` | belum | 8 |
 | BR-005 | Visibilitas ke portal hanya entri yang dibagikan | `br-005-portal-visibility` | belum | 11 |
 | BR-006 | Stok per cabang tidak boleh minus | `br-006-no-negative-stock` | belum | 4 |
-| BR-007 | FEFO (kedaluwarsa terdekat dulu) | `br-007-fefo` | belum | 4 |
+| BR-007 | FEFO (kedaluwarsa terdekat dulu) | `br-007-fefo` | lolos (pgTAP) | 2 |
 | BR-008 | Uang bilangan bulat Rupiah, tanpa float | `br-008-integer-money` | belum | 5 |
 | BR-009 | Tagihan terpadu per kunjungan / rawat inap / retail | `br-009-unified-invoice` | belum | 5 |
 | BR-010 | Pembayaran boleh sebagian, status belum lunas / sebagian / lunas | `br-010-partial-payment` | belum | 5 |

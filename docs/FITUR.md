@@ -64,10 +64,10 @@
 
 | ID | Fitur | Deskripsi | Kriteria selesai | Status | Lokasi kode | Nama tes |
 |---|---|---|---|---|---|---|
-| M06-F01 | Produk | SKU unik, nama, kategori, satuan, barcode, harga jual, harga beli terakhir, penanda berbatch/kedaluwarsa, stok minimum, status kena pajak. Dinonaktifkan, tidak dihapus. | Produk bisa dibuat, dicari, dinonaktifkan | belum | `src/modules/catalog/` | `br-007-fefo` |
-| M06-F02 | Layanan dan tindakan | Konsultasi, vaksinasi, operasi, dll dengan harga, status kena pajak, pelaksana. Dinonaktifkan, tidak dihapus. | Layanan bisa dibuat dan dinonaktifkan | belum | `src/modules/catalog/` | `br-020-vat` |
-| M06-F03 | Kategori dan riwayat harga | Kategori satu tingkat. Harga seragam semua cabang. Setiap perubahan harga tercatat dengan tanggal berlaku. | Kategori dan riwayat harga | belum | `src/modules/catalog/` | `br-020-vat` |
-| M06-F04 | Status pajak per item | Penanda kena/tidak kena PPN per produk dan layanan. Perubahan tidak mengubah tagihan lama. | Status pajak per item | belum | `src/modules/catalog/` | `br-020-vat` |
+| M06-F01 | Produk | SKU unik, nama, kategori, satuan, barcode, harga jual, harga beli terakhir, penanda berbatch/kedaluwarsa, stok minimum, status kena pajak. Dinonaktifkan, tidak dihapus. | Produk bisa dibuat, dicari, dinonaktifkan | siap | `src/modules/catalog/` | `br-007-fefo` |
+| M06-F02 | Layanan dan tindakan | Konsultasi, vaksinasi, operasi, dll dengan harga, status kena pajak, pelaksana. Dinonaktifkan, tidak dihapus. | Layanan bisa dibuat dan dinonaktifkan | siap | `src/modules/catalog/` | `br-020-vat` |
+| M06-F03 | Kategori dan riwayat harga | Kategori satu tingkat. Harga seragam semua cabang. Setiap perubahan harga tercatat dengan tanggal berlaku. | Kategori dan riwayat harga | siap | `src/modules/catalog/` | `br-020-vat` |
+| M06-F04 | Status pajak per item | Penanda kena/tidak kena PPN per produk dan layanan. Perubahan tidak mengubah tagihan lama. | Status pajak per item | siap | `src/modules/catalog/` | `br-020-vat` |
 
 ## M07. Pet Shop (3 fitur)
 
@@ -134,4 +134,4 @@
 | M12-F06 | Tagihan | Daftar dan rincian tagihan final: baris, PPN, pembulatan, pembayaran, sisa. Tanpa tombol bayar. Belum lunas: "Pembayaran dilakukan di klinik". Bisa dicetak. | Tagihan di portal tanpa bayar | belum | `src/modules/owner-portal/` | `br-019-portal-read-only` |
 | M12-F07 | Perkembangan rawat inap | Status terkini, catatan harian dan foto yang dibagikan. | Perkembangan rawat inap di portal | belum | `src/modules/owner-portal/` | `br-005-portal-visibility` |
 
-**Total: 72 fitur, 8 fitur M01 status `siap` (11%), 64 fitur status `belum`.**
+**Total: 72 fitur, 12 fitur status `siap` (M01: 8, M06: 4), 60 fitur status `belum`.**
