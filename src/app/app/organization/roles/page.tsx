@@ -1,5 +1,6 @@
 import { getRoles } from '@/modules/organization/queries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/ui/components/card';
+import { Button } from '@/ui/components/button';
 
 export default async function RolesPage() {
   const roles = await getRoles();

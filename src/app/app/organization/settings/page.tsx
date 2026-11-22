@@ -1,5 +1,5 @@
 import { getBranchSettings } from '@/modules/organization/queries';
-import { BranchSettingForm } from '@/modules/organization/components/BranchSettingForm';
+import { BranchSettingFormWrapper } from '../components/BranchSettingFormWrapper';
 import { Card, CardHeader, CardTitle, CardContent } from '@/ui/components/card';
 
 export default async function SettingsPage() {
@@ -14,27 +14,18 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Pengaturan PPN dan Pembulatan</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {settings.length === 0 ? (
-            <div className="text-muted-foreground">Belum ada pengaturan cabang.</div>
-          ) : (
-            <BranchSettingForm
-              initialData={{
-                vat_active: settings[0].vat_active,
-                vat_rate_basis_points: settings[0].vat_rate_basis_points,
-                vat_mode: settings[0].vat_mode,
-                rounding_mode: settings[0].rounding_mode,
-                expiry_warning_days: settings[0].expiry_warning_days,
-              }}
-              onSubmit={async () => {}}
-            />
-          )}
-        </CardContent>
-      </Card>
+      {settings.length === 0 ? (
+        <div className="text-muted-foreground">Belum ada pengaturan cabang.</div>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Pengaturan PPN dan Pembulatan</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BranchSettingFormWrapper initialData={settings[0]} />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

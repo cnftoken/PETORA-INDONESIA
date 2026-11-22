@@ -1,15 +1,10 @@
 import { getUsers, getRoles } from '@/modules/organization/queries';
-import { UserForm } from '@/modules/organization/components/UserForm';
+import { UserFormWrapper } from '../components/UserFormWrapper';
 import { Card, CardHeader, CardTitle, CardContent } from '@/ui/components/card';
 import { Button } from '@/ui/components/button';
-import { createUser } from '@/modules/organization/actions';
 
 export default async function UsersPage() {
   const [users, roles] = await Promise.all([getUsers(), getRoles()]);
-
-  async function handleSubmit(data: { email: string; full_name: string; phone?: string; is_active: boolean; role_id: string }) {
-    await createUser(data);
-  }
 
   return (
     <div className="space-y-6">
@@ -59,7 +54,7 @@ export default async function UsersPage() {
             )}
           </div>
           <hr className="border-border my-4" />
-          <UserForm roles={roles as any} onSubmit={handleSubmit as any} />
+          <UserFormWrapper roles={roles} />
         </CardContent>
       </Card>
     </div>

@@ -1,15 +1,10 @@
 import { getBranches } from '@/modules/organization/queries';
-import { BranchForm } from '@/modules/organization/components/BranchForm';
+import { BranchFormWrapper } from '../components/BranchFormWrapper';
 import { Card, CardHeader, CardTitle, CardContent } from '@/ui/components/card';
 import { Button } from '@/ui/components/button';
-import { createBranch as createBranchAction } from '@/modules/organization/actions';
 
 export default async function BranchesPage() {
   const branches = await getBranches();
-
-  async function handleSubmit(data: { code: string; name: string; address?: string; phone?: string; time_zone: string; is_active: boolean }) {
-    await createBranchAction(data);
-  }
 
   return (
     <div className="space-y-6">
@@ -41,7 +36,7 @@ export default async function BranchesPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {branches.map((branch) => (
+                    {branches.map((branch: any) => (
                       <tr key={branch.id} className="border-b border-border">
                         <td className="font-mono tabular-nums">{branch.code}</td>
                         <td>{branch.name}</td>
@@ -59,7 +54,7 @@ export default async function BranchesPage() {
             )}
           </div>
           <hr className="border-border my-4" />
-          <BranchForm onSubmit={handleSubmit as any} />
+          <BranchFormWrapper />
         </CardContent>
       </Card>
     </div>

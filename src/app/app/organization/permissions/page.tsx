@@ -1,5 +1,6 @@
 import { getPermissions } from '@/modules/organization/queries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/ui/components/card';
+import { Button } from '@/ui/components/button';
 
 export default async function PermissionsPage() {
   const permissions = await getPermissions();

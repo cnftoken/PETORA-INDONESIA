@@ -1,8 +1,10 @@
 import { getAuditLogs } from '@/modules/organization/queries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/ui/components/card';
+import { Button } from '@/ui/components/button';
 
 export default async function AuditLogsPage() {
-  const { data: logs, count } = await getAuditLogs();
+  const { data } = await getAuditLogs();
+  const logs = data || [];
 
   return (
     <div className="space-y-6">
@@ -19,7 +21,7 @@ export default async function AuditLogsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {logs?.length === 0 ? (
+            {logs.length === 0 ? (
               <div className="text-muted-foreground">Belum ada log audit.</div>
             ) : (
               <div className="overflow-x-auto">

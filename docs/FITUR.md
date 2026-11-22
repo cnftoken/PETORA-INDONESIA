@@ -134,4 +134,4 @@
 | M12-F06 | Tagihan | Daftar dan rincian tagihan final: baris, PPN, pembulatan, pembayaran, sisa. Tanpa tombol bayar. Belum lunas: "Pembayaran dilakukan di klinik". Bisa dicetak. | Tagihan di portal tanpa bayar | belum | `src/modules/owner-portal/` | `br-019-portal-read-only` |
 | M12-F07 | Perkembangan rawat inap | Status terkini, catatan harian dan foto yang dibagikan. | Perkembangan rawat inap di portal | belum | `src/modules/owner-portal/` | `br-005-portal-visibility` |
 
-**Total: 72 fitur, semua status `belum`.**
+**Total: 72 fitur, 8 fitur M01 status `siap` (11%), 64 fitur status `belum`.**
