@@ -3,6 +3,8 @@
 import { createServerClient } from '@/lib/supabase/server';
 import {
   stockAdjustmentSchema,
+  stockAdjustmentApproveSchema,
+  stockAdjustmentRejectSchema,
   stockDecrementSchema,
   stockReturnSchema,
   stockTransferSchema,
@@ -11,6 +13,8 @@ import {
 } from '@/modules/inventory/schemas';
 import type {
   StockAdjustmentInput,
+  StockAdjustmentApproveInput,
+  StockAdjustmentRejectInput,
   StockDecrementInput,
   StockReturnInput,
   StockTransferInput,
@@ -593,4 +597,162 @@ export async function receiveStock(input: {
   if (mutationError) throw new Error(mutationError.message);
 
   return { success: true, newQuantity };
+}
+
+export async function createStockAdjustment(input: StockAdjustmentInput) {
+  const validated = stockAdjustmentSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: adjustment, error: adjustmentError } = await supabase
+    .from('stock_adjustments')
+    .insert({
+      branch_id: validated.branch_id,
+      product_id: validated.product_id,
+      type: validated.type,
+      quantity: validated.quantity,
+      reason: validated.reason,
+      status: 'draft',
+    })
+    .select()
+    .single();
+
+  if (adjustmentError) throw new Error(adjustmentError.message);
+
+  return adjustment;
+}
+
+export async function requestApprovalStockAdjustment(input: StockAdjustmentApproveInput) {
+  const validated = stockAdjustmentApproveSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: adjustment, error: adjustmentError } = await supabase
+    .from('stock_adjustments')
+    .select('*')
+    .eq('id', validated.adjustment_id)
+    .eq('status', 'draft')
+    .single();
+
+  if (adjustmentError) throw new Error('Penyesuaian tidak ditemukan atau bukan dalam status draft.');
+
+  const { data: updated, error: updateError } = await supabase
+    .from('stock_adjustments')
+    .update({ status: 'approval', updated_at: new Date().toISOString() })
+    .eq('id', validated.adjustment_id)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+
+  return updated;
+}
+
+export async function approveStockAdjustment(input: StockAdjustmentApproveInput) {
+  const validated = stockAdjustmentApproveSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: adjustment, error: adjustmentError } = await supabase
+    .from('stock_adjustments')
+    .select('*')
+    .eq('id', validated.adjustment_id)
+    .eq('status', 'approval')
+    .single();
+
+  if (adjustmentError) throw new Error('Penyesuaian tidak ditemukan atau belum dalam status approval.');
+
+  // Hitung saldo baru berdasarkan type
+  const { data: balance, error: balanceError } = await supabase
+    .from('stock_balances')
+    .select('quantity')
+    .eq('branch_id', adjustment.branch_id)
+    .eq('product_id', adjustment.product_id)
+    .single();
+
+  if (balanceError && balanceError.code !== 'PGRST116') throw balanceError;
+
+  const currentQty = balance?.quantity ?? 0;
+  let newQty = currentQty;
+
+  if (adjustment.type === 'add') {
+    newQty = currentQty + adjustment.quantity;
+  } else if (adjustment.type === 'subtract') {
+    newQty = currentQty - adjustment.quantity;
+    if (newQty < 0) {
+      throw new Error(
+        `Stok tidak cukup. Tersedia ${currentQty} pcs, penyesuaian mengurangi ${adjustment.quantity} pcs (akan menjadi minus).`
+      );
+    }
+  } else if (adjustment.type === 'set') {
+    newQty = adjustment.quantity;
+  }
+
+  // Upsert saldo stok (BR-006: constraint quantity >= 0 juga memastikan tidak minus)
+  const { data: upserted, error: upsertError } = await supabase
+    .from('stock_balances')
+    .upsert(
+      {
+        branch_id: adjustment.branch_id,
+        product_id: adjustment.product_id,
+        quantity: newQty,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'branch_id, product_id' }
+    )
+    .select()
+    .single();
+
+  if (upsertError) throw new Error(upsertError.message);
+
+  // Catat mutasi adjustment
+  const mutationQty =
+    adjustment.type === 'subtract' ? -adjustment.quantity : adjustment.quantity;
+  const { error: mutationError } = await supabase.from('stock_mutations').insert({
+    branch_id: adjustment.branch_id,
+    product_id: adjustment.product_id,
+    mutation_type: 'adjustment',
+    quantity: mutationQty,
+    reference: `ADJUST-${adjustment.id}`,
+  });
+
+  if (mutationError) throw new Error(mutationError.message);
+
+  const { data: updated, error: updateError } = await supabase
+    .from('stock_adjustments')
+    .update({
+      status: 'approved',
+      approved_by: validated.approved_by ?? null,
+      approved_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', validated.adjustment_id)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+
+  return updated;
+}
+
+export async function rejectStockAdjustment(input: StockAdjustmentRejectInput) {
+  const validated = stockAdjustmentRejectSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: adjustment } = await supabase
+    .from('stock_adjustments')
+    .select('*')
+    .eq('id', validated.adjustment_id)
+    .in('status', ['draft', 'approval'])
+    .single();
+
+  if (!adjustment) throw new Error('Penyesuaian tidak ditemukan atau tidak dapat ditolak.');
+
+  const { data: updated, error: updateError } = await supabase
+    .from('stock_adjustments')
+    .update({ status: 'rejected', updated_at: new Date().toISOString() })
+    .eq('id', validated.adjustment_id)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+
+  return updated;
 }

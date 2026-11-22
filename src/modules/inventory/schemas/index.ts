@@ -62,3 +62,16 @@ export const stockTransferReceiveSchema = z.object({
 });
 
 export type StockTransferReceiveInput = z.infer<typeof stockTransferReceiveSchema>;
+
+export const stockAdjustmentApproveSchema = z.object({
+  adjustment_id: z.string().uuid('Penyesuaian wajib dipilih'),
+  approved_by: z.string().uuid().optional().nullish(),
+});
+
+export type StockAdjustmentApproveInput = z.infer<typeof stockAdjustmentApproveSchema>;
+
+export const stockAdjustmentRejectSchema = z.object({
+  adjustment_id: z.string().uuid('Penyesuaian wajib dipilih'),
+});
+
+export type StockAdjustmentRejectInput = z.infer<typeof stockAdjustmentRejectSchema>;

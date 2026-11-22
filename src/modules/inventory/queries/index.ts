@@ -169,3 +169,46 @@ export async function getStockTransferById(id: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getStockAdjustments({
+  page = 1,
+  pageSize = 50,
+  branchId,
+  productId,
+  status,
+}: {
+  page?: number;
+  pageSize?: number;
+  branchId?: string;
+  productId?: string;
+  status?: string;
+} = {}) {
+  const supabase = await createServerClient();
+  let query = supabase
+    .from('stock_adjustments')
+    .select('*, branches(code, name), products(sku, name)', { count: 'exact' })
+    .order('created_at', { ascending: false });
+
+  if (branchId) query = query.eq('branch_id', branchId);
+  if (productId) query = query.eq('product_id', productId);
+  if (status) query = query.eq('status', status);
+
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  query = query.range(from, to);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data, count };
+}
+
+export async function getStockAdjustmentById(id: string) {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('stock_adjustments')
+    .select('*, branches(code, name), products(sku, name)')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return data;
+}

@@ -10,9 +10,11 @@ import { stockAdjustmentSchema, type StockAdjustmentInput } from '@/modules/inve
 export function StockAdjustmentForm({
   initialData,
   onSubmit,
+  submitting,
 }: {
   initialData?: Partial<StockAdjustmentInput>;
   onSubmit: (data: StockAdjustmentInput) => void;
+  submitting?: boolean;
 }) {
   const form = useForm<StockAdjustmentInput>({
     resolver: zodResolver(stockAdjustmentSchema),
@@ -92,7 +94,9 @@ export function StockAdjustmentForm({
           )}
         </div>
       </div>
-      <Button type="submit">Simpan Penyesuaian Stok</Button>
+      <Button type="submit" disabled={submitting}>
+        Simpan Penyesuaian Stok
+      </Button>
     </form>
   );
 }
