@@ -5,11 +5,17 @@ import {
   stockAdjustmentSchema,
   stockDecrementSchema,
   stockReturnSchema,
+  stockTransferSchema,
+  stockTransferSendSchema,
+  stockTransferReceiveSchema,
 } from '@/modules/inventory/schemas';
 import type {
   StockAdjustmentInput,
   StockDecrementInput,
   StockReturnInput,
+  StockTransferInput,
+  StockTransferSendInput,
+  StockTransferReceiveInput,
 } from '@/modules/inventory/schemas';
 
 export async function adjustStock(input: StockAdjustmentInput) {
@@ -198,6 +204,318 @@ export async function returnStock(input: StockReturnInput) {
   if (mutationError) throw new Error(mutationError.message);
 
   return upserted;
+}
+
+export async function createStockTransfer(input: StockTransferInput) {
+  const validated = stockTransferSchema.parse(input);
+  const supabase = await createServerClient();
+
+  // Validasi cabang asal dan tujuan berbeda
+  if (validated.branch_id === validated.destination_branch_id) {
+    throw new Error('Cabang tujuan harus berbeda dari cabang asal.');
+  }
+
+  // Validasi stok mencukupi di cabang asal (BR-006: tidak boleh minus)
+  for (const detail of validated.details) {
+    const { data: balance, error: balanceError } = await supabase
+      .from('stock_balances')
+      .select('quantity')
+      .eq('branch_id', validated.branch_id)
+      .eq('product_id', detail.product_id)
+      .single();
+
+    if (balanceError && balanceError.code !== 'PGRST116') throw balanceError;
+
+    const available = balance?.quantity ?? 0;
+    if (available < detail.quantity) {
+      throw new Error(
+        `Stok tidak cukup untuk ${detail.product_id}. Tersedia ${available} pcs, diminta ${detail.quantity} pcs.`
+      );
+    }
+  }
+
+  const { data: transfer, error: transferError } = await supabase
+    .from('stock_transfers')
+    .insert({
+      branch_id: validated.branch_id,
+      destination_branch_id: validated.destination_branch_id,
+      status: 'draft',
+      reference: validated.reference,
+      notes: validated.notes,
+    })
+    .select()
+    .single();
+
+  if (transferError) throw new Error(transferError.message);
+
+  const detailsWithTransfer = validated.details.map((detail) => ({
+    transfer_id: transfer.id,
+    product_id: detail.product_id,
+    quantity: detail.quantity,
+    batch_no: detail.batch_no ?? null,
+    expiry_date: detail.expiry_date ?? null,
+  }));
+
+  const { error: detailsError } = await supabase
+    .from('stock_transfer_details')
+    .insert(detailsWithTransfer);
+
+  if (detailsError) throw new Error(detailsError.message);
+
+  return transfer;
+}
+
+export async function sendStockTransfer(input: StockTransferSendInput) {
+  const validated = stockTransferSendSchema.parse(input);
+  const supabase = await createServerClient();
+
+  // Ambil transfer dengan cek status draft
+  const { data: transfer, error: transferError } = await supabase
+    .from('stock_transfers')
+    .select('*, stock_transfer_details(*)')
+    .eq('id', validated.transfer_id)
+    .eq('status', 'draft')
+    .single();
+
+  if (transferError) throw new Error('Transfer tidak ditemukan atau belum dalam status draft.');
+
+  // Kurangi stok asal per detail
+  for (const detail of transfer.stock_transfer_details) {
+    // Kurangi saldo stok asal
+    const { data: balance, error: balanceError } = await supabase
+      .from('stock_balances')
+      .select('quantity')
+      .eq('branch_id', transfer.branch_id)
+      .eq('product_id', detail.product_id)
+      .single();
+
+    if (balanceError && balanceError.code !== 'PGRST116') throw balanceError;
+
+    const available = balance?.quantity ?? 0;
+    if (available < detail.quantity) {
+      throw new Error(
+        `Stok tidak cukup untuk produk ${detail.product_id}. Tersedia ${available} pcs, diminta ${detail.quantity} pcs.`
+      );
+    }
+
+    await supabase
+      .from('stock_balances')
+      .update({ quantity: available - detail.quantity, updated_at: new Date().toISOString() })
+      .eq('branch_id', transfer.branch_id)
+      .eq('product_id', detail.product_id);
+
+    // Kurangi batch FEFO di cabang asal (jika batch tersedia)
+    if (detail.batch_no) {
+      const { data: batch } = await supabase
+        .from('stock_batches')
+        .select('id, quantity')
+        .eq('branch_id', transfer.branch_id)
+        .eq('product_id', detail.product_id)
+        .eq('batch_no', detail.batch_no)
+        .single();
+
+      if (batch) {
+        await supabase
+          .from('stock_batches')
+          .update({ quantity: batch.quantity - detail.quantity, updated_at: new Date().toISOString() })
+          .eq('id', batch.id);
+      }
+    }
+
+    // Catat mutasi out
+    let batchIdOut: string | null = null;
+    if (detail.batch_no) {
+      const { data: batchRow } = await supabase
+        .from('stock_batches')
+        .select('id')
+        .eq('branch_id', transfer.branch_id)
+        .eq('product_id', detail.product_id)
+        .eq('batch_no', detail.batch_no)
+        .single();
+      batchIdOut = batchRow?.id ?? null;
+    }
+
+    await supabase.from('stock_mutations').insert({
+      branch_id: transfer.branch_id,
+      product_id: detail.product_id,
+      batch_id: batchIdOut,
+      mutation_type: 'out',
+      quantity: -detail.quantity,
+      reference: `TRF-KIRIM-${transfer.reference}`,
+    });
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from('stock_transfers')
+    .update({ status: 'dikirim', updated_at: new Date().toISOString() })
+    .eq('id', validated.transfer_id)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+
+  return updated;
+}
+
+export async function receiveStockTransfer(input: StockTransferReceiveInput) {
+  const validated = stockTransferReceiveSchema.parse(input);
+  const supabase = await createServerClient();
+
+  // Ambil transfer dengan status dikirim
+  const { data: transfer, error: transferError } = await supabase
+    .from('stock_transfers')
+    .select('*, stock_transfer_details(*)')
+    .eq('id', validated.transfer_id)
+    .eq('status', 'dikirim')
+    .single();
+
+  if (transferError) throw new Error('Transfer tidak ditemukan atau belum dalam status dikirim.');
+
+  // Tambah stok tujuan per detail
+  for (const detail of transfer.stock_transfer_details) {
+    // Tambah saldo stok tujuan
+    const { data: balance, error: balanceError } = await supabase
+      .from('stock_balances')
+      .select('quantity')
+      .eq('branch_id', transfer.destination_branch_id)
+      .eq('product_id', detail.product_id)
+      .single();
+
+    if (balanceError && balanceError.code !== 'PGRST116') throw balanceError;
+
+    const newQuantity = (balance?.quantity ?? 0) + detail.quantity;
+
+    await supabase
+      .from('stock_balances')
+      .upsert(
+        {
+          branch_id: transfer.destination_branch_id,
+          product_id: detail.product_id,
+          quantity: newQuantity,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'branch_id, product_id' }
+      );
+
+    // Tambah batch di cabang tujuan
+    if (detail.batch_no) {
+      const { data: existingBatch } = await supabase
+        .from('stock_batches')
+        .select('id, quantity')
+        .eq('branch_id', transfer.destination_branch_id)
+        .eq('product_id', detail.product_id)
+        .eq('batch_no', detail.batch_no)
+        .single();
+
+      if (existingBatch) {
+        await supabase
+          .from('stock_batches')
+          .update({ quantity: existingBatch.quantity + detail.quantity, updated_at: new Date().toISOString() })
+          .eq('id', existingBatch.id);
+      } else {
+        await supabase.from('stock_batches').insert({
+          branch_id: transfer.destination_branch_id,
+          product_id: detail.product_id,
+          batch_no: detail.batch_no,
+          expiry_date: detail.expiry_date ?? null,
+          quantity: detail.quantity,
+        });
+      }
+    }
+
+    // Catat mutasi in di cabang tujuan
+    let batchIdIn: string | null = null;
+    if (detail.batch_no) {
+      const { data: batchRow } = await supabase
+        .from('stock_batches')
+        .select('id')
+        .eq('branch_id', transfer.destination_branch_id)
+        .eq('product_id', detail.product_id)
+        .eq('batch_no', detail.batch_no)
+        .single();
+      batchIdIn = batchRow?.id ?? null;
+    }
+
+    await supabase.from('stock_mutations').insert({
+      branch_id: transfer.destination_branch_id,
+      product_id: detail.product_id,
+      batch_id: batchIdIn,
+      mutation_type: 'in',
+      quantity: detail.quantity,
+      reference: `TRF-TERIMA-${transfer.reference}`,
+    });
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from('stock_transfers')
+    .update({
+      status: 'diterima',
+      checked_by: validated.checked_by ?? null,
+      checked_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', validated.transfer_id)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+
+  return updated;
+}
+
+export async function cancelStockTransfer(input: StockTransferSendInput) {
+  const validated = stockTransferSendSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: transfer } = await supabase
+    .from('stock_transfers')
+    .select('*')
+    .eq('id', validated.transfer_id)
+    .in('status', ['draft', 'dikirim'])
+    .single();
+
+  if (!transfer) throw new Error('Transfer tidak ditemukan atau tidak dapat dibatalkan.');
+
+  // Jika sudah dikirim, kembalikan stok yang dikurangi
+  if (transfer.status === 'dikirim') {
+    const { data: details } = await supabase
+      .from('stock_transfer_details')
+      .select('*')
+      .eq('transfer_id', validated.transfer_id);
+
+    for (const detail of details ?? []) {
+      const { data: balance } = await supabase
+        .from('stock_balances')
+        .select('quantity')
+        .eq('branch_id', transfer.branch_id)
+        .eq('product_id', detail.product_id)
+        .single();
+
+      const newQuantity = (balance?.quantity ?? 0) + detail.quantity;
+      await supabase
+        .from('stock_balances')
+        .upsert(
+          {
+            branch_id: transfer.branch_id,
+            product_id: detail.product_id,
+            quantity: newQuantity,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'branch_id, product_id' }
+        );
+    }
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from('stock_transfers')
+    .update({ status: 'dibatalkan', updated_at: new Date().toISOString() })
+    .eq('id', validated.transfer_id)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+
+  return updated;
 }
 
 export async function receiveStock(input: {

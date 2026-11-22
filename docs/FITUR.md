@@ -85,7 +85,7 @@
 | M08-F02 | Batch dan kedaluwarsa | Penerimaan mencatat batch dan kedaluwarsa. Pengurangan FEFO. Batch kedaluwarsa tidak bisa dijual. | Batch dan kedaluwarsa tercatat | siap | `src/modules/inventory/` | `br-007-fefo` |
 | M08-F03 | Penyesuaian stok | Koreksi dengan alasan. Gudang ajukan, Supervisor/Owner setujui. Tidak bisa stok minus. | Penyesuaian stok dengan approval | belum | `src/modules/inventory/` | `br-006-no-negative-stock` |
 | M08-F04 | Kartu stok | Riwayat mutasi per produk dan batch dengan saldo berjalan. Tiap baris menunjuk dokumen sumber. | Kartu stok ditampilkan | siap | `src/modules/inventory/` | `br-024-stock-decrement` |
-| M08-F05 | Transfer antar cabang | Stok asal berkurang saat dikirim, tujuan bertambah saat diterima, batch/kedaluwarsa terbawa, dalam perjalanan tercatat, selisih ditinjau. | Transfer stok berfungsi | belum | `src/modules/inventory/` | `br-017-stock-transfer` |
+| M08-F05 | Transfer antar cabang | Stok asal berkurang saat dikirim, tujuan bertambah saat diterima, batch/kedaluwarsa terbawa, dalam perjalanan tercatat, selisih ditinjau. | Transfer stok berfungsi | siap | `src/modules/inventory/` | `m08-f05-transfer` |
 | M08-F06 | Peringatan stok minimum dan kedaluwarsa | Daftar produk di bawah stok minimum dan batch kedaluwarsa dalam hari (default 30). Dashboard Gudang, Supervisor, Owner. | Peringatan stok ditampilkan | belum | `src/modules/inventory/` | `br-007-fefo` |
 | M08-F07 | Stock opname | Sesi penghitungan fisik per cabang. Produk terkunci sampai sesi ditutup. Selisih jadi penyesuaian setelah disetujui. | Stock opname berjalan | belum | `src/modules/inventory/` | `br-023-stock-opname` |
 

@@ -126,3 +126,46 @@ export async function getStockCard({
   if (error) throw error;
   return { data, count };
 }
+
+export async function getStockTransfers({
+  page = 1,
+  pageSize = 50,
+  branchId,
+  destinationBranchId,
+  status,
+}: {
+  page?: number;
+  pageSize?: number;
+  branchId?: string;
+  destinationBranchId?: string;
+  status?: string;
+} = {}) {
+  const supabase = await createServerClient();
+  let query = supabase
+    .from('stock_transfers')
+    .select('*, branches(code, name), destination_branch:branches(code, name)', { count: 'exact' })
+    .order('created_at', { ascending: false });
+
+  if (branchId) query = query.eq('branch_id', branchId);
+  if (destinationBranchId) query = query.eq('destination_branch_id', destinationBranchId);
+  if (status) query = query.eq('status', status);
+
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  query = query.range(from, to);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data, count };
+}
+
+export async function getStockTransferById(id: string) {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('stock_transfers')
+    .select('*, branches(code, name), destination_branch:branches(code, name), stock_transfer_details(*, products(sku, name))')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return data;
+}

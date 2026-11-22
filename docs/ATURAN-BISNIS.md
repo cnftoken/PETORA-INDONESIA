@@ -20,7 +20,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-014 | Jejak audit: siapa, kapan, apa yang berubah (nilai lama dan baru) | `br-014-audit-trail` | lolos (pgTAP) | 0 |
 | BR-015 | Akun portal terikat ke satu pelanggan lewat undangan | `br-015-portal-account-binding` | belum | 11 |
 | BR-016 | Zona waktu mengikuti lokasi cabang, disimpan UTC | `br-016-timezone` | lolos (pgTAP) | 0 |
-| BR-017 | Transfer stok antar cabang: draft → dikirim → diterima, selisih ditinjau | `br-017-stock-transfer` | belum | 4 |
+| BR-017 | Transfer stok antar cabang: draft → dikirim → diterima, selisih ditinjau | `m08-f05-transfer` | lolos (pgTAP) | 4 |
 | BR-018 | Pembayaran dicatat manual oleh kasir, satu metode, tidak tercatat ganda | `br-018-manual-payment` | belum | 5 |
 | BR-019 | Portal hanya untuk melihat, tidak ada tombol bayar | `br-019-portal-read-only` | belum | 11 |
 | BR-020 | PPN dapat dikonfigurasi, basis poin, tagihan menyimpan salinan | `br-020-vat` | lolos (pgTAP) | 1 |

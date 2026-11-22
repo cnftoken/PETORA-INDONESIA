@@ -32,3 +32,33 @@ export const stockReturnSchema = z.object({
 });
 
 export type StockReturnInput = z.infer<typeof stockReturnSchema>;
+
+export const stockTransferSchema = z.object({
+  branch_id: z.string().uuid('Cabang asal wajib dipilih'),
+  destination_branch_id: z.string().uuid('Cabang tujuan wajib dipilih'),
+  reference: z.string().min(1, 'Referensi transfer wajib diisi'),
+  notes: z.string().optional(),
+  details: z.array(
+    z.object({
+      product_id: z.string().uuid('Produk wajib dipilih'),
+      quantity: z.number().int().min(1, 'Kuantitas minimal 1'),
+      batch_no: z.string().optional(),
+      expiry_date: z.string().optional().or(z.literal('')),
+    })
+  ).min(1, 'Minimal satu item transfer'),
+});
+
+export type StockTransferInput = z.infer<typeof stockTransferSchema>;
+
+export const stockTransferSendSchema = z.object({
+  transfer_id: z.string().uuid('Transfer wajib dipilih'),
+});
+
+export type StockTransferSendInput = z.infer<typeof stockTransferSendSchema>;
+
+export const stockTransferReceiveSchema = z.object({
+  transfer_id: z.string().uuid('Transfer wajib dipilih'),
+  checked_by: z.string().uuid().optional().nullish(),
+});
+
+export type StockTransferReceiveInput = z.infer<typeof stockTransferReceiveSchema>;
