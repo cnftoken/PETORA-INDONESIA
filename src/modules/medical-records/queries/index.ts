@@ -70,3 +70,25 @@ export async function getDiagnosisSuggestions({
   const uniqueDiagnoses = Array.from(new Set((data ?? []).map((row) => row.diagnosis)));
   return uniqueDiagnoses;
 }
+
+export async function getMedicalAttachments(examinationId: string) {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('medical_attachments')
+    .select('*, users(full_name)')
+    .eq('examination_id', examinationId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getMedicalAttachmentById(id: string) {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('medical_attachments')
+    .select('*, examinations(visit_id)')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return data;
+}

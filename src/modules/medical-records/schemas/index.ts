@@ -42,3 +42,15 @@ export const medicalAddendumSchema = z.object({
 });
 
 export type MedicalAddendumInput = z.infer<typeof medicalAddendumSchema>;
+
+export const medicalAttachmentSchema = z.object({
+  examination_id: z.string().uuid('Entri medis wajib dipilih'),
+  file_name: z.string().min(1, 'Nama file wajib diisi'),
+  file_type: z.enum(['image/jpeg', 'image/png', 'application/pdf']),
+  file_size: z
+    .number()
+    .min(1, 'File tidak boleh kosong')
+    .max(10 * 1024 * 1024, 'Maksimal 10 MB'),
+});
+
+export type MedicalAttachmentInput = z.infer<typeof medicalAttachmentSchema>;

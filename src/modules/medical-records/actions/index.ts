@@ -6,12 +6,14 @@ import {
   medicalEntryUpdateSchema,
   medicalFinalizeSchema,
   medicalAddendumSchema,
+  medicalAttachmentSchema,
 } from '@/modules/medical-records/schemas';
 import type {
   MedicalEntryInput,
   MedicalEntryUpdateInput,
   MedicalFinalizeInput,
   MedicalAddendumInput,
+  MedicalAttachmentInput,
 } from '@/modules/medical-records/schemas';
 
 export async function createMedicalEntry(input: MedicalEntryInput) {
@@ -91,4 +93,89 @@ export async function getDiagnosisSuggestions(input: {
     '@/modules/medical-records/queries'
   );
   return getSuggestions(input);
+}
+
+export async function uploadMedicalAttachment(formData: FormData) {
+  const examination_id = formData.get('examination_id') as string;
+  const file = formData.get('file') as File;
+
+  if (!examination_id || !file) {
+    throw new Error('Entri medis dan file wajib diisi.');
+  }
+
+  const validated = medicalAttachmentSchema.parse({
+    examination_id,
+    file_name: file.name,
+    file_type: file.type,
+    file_size: file.size,
+  });
+
+  const supabase = await createServerClient();
+
+  // Upload ke storage
+  const filePath = `${validated.examination_id}/${crypto.randomUUID()}-${validated.file_name}`;
+  const { error: uploadError } = await supabase.storage
+    .from('medical-attachments')
+    .upload(filePath, file);
+
+  if (uploadError) throw new Error(uploadError.message);
+
+  // Simpan catatan ke database
+  const { data, error } = await supabase
+    .from('medical_attachments')
+    .insert({
+      examination_id: validated.examination_id,
+      file_name: validated.file_name,
+      file_path: filePath,
+      file_type: validated.file_type,
+      file_size: validated.file_size,
+      uploaded_by: (await supabase.auth.getUser()).data.user?.id,
+    })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function getMedicalAttachmentSignedUrl(id: string) {
+  const supabase = await createServerClient();
+
+  const { data: attachment, error: attachmentError } = await supabase
+    .from('medical_attachments')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (attachmentError) throw new Error(attachmentError.message);
+
+  const { data, error } = await supabase.storage
+    .from('medical-attachments')
+    .createSignedUrl(attachment.file_path, 3600); // berlaku 1 jam
+  if (error) throw new Error(error.message);
+  return data.signedUrl;
+}
+
+export async function deleteMedicalAttachment(id: string) {
+  const supabase = await createServerClient();
+
+  const { data: attachment, error: attachmentError } = await supabase
+    .from('medical_attachments')
+    .select('file_path')
+    .eq('id', id)
+    .single();
+  if (attachmentError) throw new Error(attachmentError.message);
+
+  const { error: storageError } = await supabase.storage
+    .from('medical-attachments')
+    .remove([attachment.file_path]);
+  if (storageError) throw new Error(storageError.message);
+
+  const { error } = await supabase.from('medical_attachments').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function getMedicalAttachmentsAction(examinationId: string) {
+  const { getMedicalAttachments: getAttachments } = await import(
+    '@/modules/medical-records/queries'
+  );
+  return getAttachments(examinationId);
 }
