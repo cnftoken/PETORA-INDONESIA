@@ -29,12 +29,12 @@
 
 | ID | Fitur | Deskripsi | Kriteria selesai | Status | Lokasi kode | Nama tes |
 |---|---|---|---|---|---|---|
-| M03-F01 | Pendaftaran kunjungan | Pilih pelanggan dan hewan, keluhan, dokter tujuan, jenis layanan. Nomor kunjungan saat pendaftaran (BR-022). Status awal "terdaftar". | Kunjungan terdaftar, nomor diberikan | belum | `src/modules/clinic/` | `br-022-document-numbering` |
+| M03-F01 | Pendaftaran kunjungan | Pilih pelanggan dan hewan, keluhan, dokter tujuan, jenis layanan. Nomor kunjungan saat pendaftaran (BR-022). Status awal "terdaftar". | Kunjungan terdaftar, nomor diberikan | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 | M03-F02 | Antrean | Daftar menunggu per cabang dan dokter, panggil, lewati. Realtime tanpa muat ulang. | Antrean berfungsi, realtime | belum | `src/modules/clinic/` | `br-001-branch-isolation` |
-| M03-F03 | Pemeriksaan dan tindakan | Dokter memulai pemeriksaan, status "diperiksa", tagihan draft otomatis. Tindakan masuk draft dengan salinan harga/pajak. Tandai "selesai". | Pemeriksaan dan tagihan draft | belum | `src/modules/clinic/` | `br-009-unified-invoice` |
+| M03-F03 | Pemeriksaan dan tindakan | Dokter memulai pemeriksaan, status "diperiksa", tagihan draft otomatis. Tindakan masuk draft dengan salinan harga/pajak. Tandai "selesai". | Pemeriksaan dan tagihan draft | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 | M03-F04 | Resep dan obat | Dokter menulis resep dari katalog (dosis, aturan pakai, jumlah). Obat masuk draft tagihan. Stok berkurang saat finalisasi. Jika tidak cukup, ditolak. | Resep masuk draft, stok dicek saat finalisasi | belum | `src/modules/clinic/` | `br-006-no-negative-stock`, `br-024-stock-decrement` |
 | M03-F05 | Perubahan status kunjungan | Alur: terdaftar → menunggu → diperiksa → selesai. Pembatalan hanya sebelum diperiksa, wajib beralasan. | Status berubah sesuai alur | belum | `src/modules/clinic/` | `br-001-branch-isolation` |
-| M03-F06 | Daftar dan riwayat kunjungan | Cari dan filter tanggal (zona cabang), status, dokter, pelanggan. | Daftar kunjungan dengan filter | belum | `src/modules/clinic/` | `br-016-timezone` |
+| M03-F06 | Daftar dan riwayat kunjungan | Cari dan filter tanggal (zona cabang), status, dokter, pelanggan. | Daftar kunjungan dengan filter | siap | `src/modules/clinic/` | `m03-f01-f06-klinik` |
 
 ## M04. Rekam Medis dan Vaksinasi (8 fitur)
 
@@ -134,4 +134,4 @@
 | M12-F06 | Tagihan | Daftar dan rincian tagihan final: baris, PPN, pembulatan, pembayaran, sisa. Tanpa tombol bayar. Belum lunas: "Pembayaran dilakukan di klinik". Bisa dicetak. | Tagihan di portal tanpa bayar | belum | `src/modules/owner-portal/` | `br-019-portal-read-only` |
 | M12-F07 | Perkembangan rawat inap | Status terkini, catatan harian dan foto yang dibagikan. | Perkembangan rawat inap di portal | belum | `src/modules/owner-portal/` | `br-005-portal-visibility` |
 
-**Total: 72 fitur, 15 fitur status `siap` (M01: 8, M06: 4, M02: 3), 57 fitur status `belum`.**
+**Total: 72 fitur, 18 fitur status `siap` (M01: 8, M06: 4, M02: 3, M03: 3), 54 fitur status `belum`.**

@@ -12,7 +12,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-006 | Stok per cabang tidak boleh minus | `br-006-no-negative-stock` | belum | 4 |
 | BR-007 | FEFO (kedaluwarsa terdekat dulu) | `br-007-fefo` | lolos (pgTAP) | 2 |
 | BR-008 | Uang bilangan bulat Rupiah, tanpa float | `br-008-integer-money` | belum | 5 |
-| BR-009 | Tagihan terpadu per kunjungan / rawat inap / retail | `br-009-unified-invoice` | belum | 5 |
+| BR-009 | Tagihan terpadu per kunjungan / rawat inap / retail | `m03-f01-f06-klinik` | lolos (pgTAP) | 4 |
 | BR-010 | Pembayaran boleh sebagian, status belum lunas / sebagian / lunas | `br-010-partial-payment` | belum | 5 |
 | BR-011 | Transaksi final tidak dihapus, void / pembatalan / retur / refund | `br-011-void-return-refund` | belum | 5 |
 | BR-012 | Biaya kandang per 24 jam sejak check-in, dibulatkan ke atas, minimal 1 hari | `br-012-kennel-cost` | belum | 9 |
@@ -25,7 +25,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-019 | Portal hanya untuk melihat, tidak ada tombol bayar | `br-019-portal-read-only` | belum | 11 |
 | BR-020 | PPN dapat dikonfigurasi, basis poin, tagihan menyimpan salinan | `br-020-vat` | lolos (pgTAP) | 1 |
 | BR-021 | Pembulatan tagihan dapat dikonfigurasi, baris terpisah | `br-021-rounding` | lolos (pgTAP) | 1 |
-| BR-022 | Penomoran dokumen unik dan berurutan per cabang per jenis | `br-022-document-numbering` | belum | 5 |
+| BR-022 | Penomoran dokumen unik dan berurutan per cabang per jenis | `m03-f01-f06-klinik` | lolos (pgTAP) | 4 |
 | BR-023 | Stock opname: produk terkunci sampai sesi ditutup, selisih disetujui | `br-023-stock-opname` | belum | 4 |
 | BR-024 | Saat stok berkurang: finalisasi tagihan / pemberian obat / retur mengembalikan | `br-024-stock-decrement` | belum | 5 |
 | BR-025 | Diskon hanya per baris, persen atau nominal, wajib beralasan | `br-025-discount` | belum | 5 |
