@@ -212,3 +212,57 @@ export async function getStockAdjustmentById(id: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getStockLowAlerts({
+  branchId,
+}: {
+  branchId?: string;
+} = {}) {
+  const supabase = await createServerClient();
+  let query = supabase
+    .from('stock_balances')
+    .select('*, products(sku, name, min_stock)', { count: 'exact' })
+    .order('quantity', { ascending: true });
+
+  if (branchId) query = query.eq('branch_id', branchId);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+
+  // Filter di aplikasi: saldo di bawah min_stock
+  const alerts = (data ?? []).filter((row: any) => {
+    const product = row.products;
+    const available = row.quantity - row.reserved;
+    return product && available < product.min_stock;
+  });
+
+  return { data: alerts, count: alerts.length };
+}
+
+export async function getStockExpiryAlerts({
+  branchId,
+  days = 30,
+}: {
+  branchId?: string;
+  days?: number;
+} = {}) {
+  const supabase = await createServerClient();
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() + days);
+  const cutoffISO = cutoffDate.toISOString().split('T')[0];
+  const todayISO = new Date().toISOString().split('T')[0];
+
+  let query = supabase
+    .from('stock_batches')
+    .select('*, products(sku, name)', { count: 'exact' })
+    .gt('quantity', 0)
+    .gte('expiry_date', todayISO)
+    .lte('expiry_date', cutoffISO)
+    .order('expiry_date', { ascending: true });
+
+  if (branchId) query = query.eq('branch_id', branchId);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data, count };
+}
