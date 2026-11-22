@@ -75,3 +75,24 @@ export const stockAdjustmentRejectSchema = z.object({
 });
 
 export type StockAdjustmentRejectInput = z.infer<typeof stockAdjustmentRejectSchema>;
+
+export const stockOpnameSessionSchema = z.object({
+  branch_id: z.string().uuid('Cabang wajib dipilih'),
+  notes: z.string().optional(),
+});
+
+export type StockOpnameSessionInput = z.infer<typeof stockOpnameSessionSchema>;
+
+export const stockOpnameCountSchema = z.object({
+  session_id: z.string().uuid('Sesi opname wajib dipilih'),
+  product_id: z.string().uuid('Produk wajib dipilih'),
+  counted_quantity: z.number().int().min(0, 'Kuantitas hitungan minimal 0'),
+});
+
+export type StockOpnameCountInput = z.infer<typeof stockOpnameCountSchema>;
+
+export const stockOpnameCloseSchema = z.object({
+  session_id: z.string().uuid('Sesi opname wajib dipilih'),
+});
+
+export type StockOpnameCloseInput = z.infer<typeof stockOpnameCloseSchema>;

@@ -10,6 +10,9 @@ import {
   stockTransferSchema,
   stockTransferSendSchema,
   stockTransferReceiveSchema,
+  stockOpnameSessionSchema,
+  stockOpnameCountSchema,
+  stockOpnameCloseSchema,
 } from '@/modules/inventory/schemas';
 import type {
   StockAdjustmentInput,
@@ -20,6 +23,9 @@ import type {
   StockTransferInput,
   StockTransferSendInput,
   StockTransferReceiveInput,
+  StockOpnameSessionInput,
+  StockOpnameCountInput,
+  StockOpnameCloseInput,
 } from '@/modules/inventory/schemas';
 
 export async function adjustStock(input: StockAdjustmentInput) {
@@ -749,6 +755,151 @@ export async function rejectStockAdjustment(input: StockAdjustmentRejectInput) {
     .from('stock_adjustments')
     .update({ status: 'rejected', updated_at: new Date().toISOString() })
     .eq('id', validated.adjustment_id)
+    .select()
+    .single();
+
+  if (updateError) throw new Error(updateError.message);
+
+  return updated;
+}
+
+export async function openStockOpnameSession(input: StockOpnameSessionInput) {
+  const validated = stockOpnameSessionSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: session, error: sessionError } = await supabase
+    .from('stock_opname_sessions')
+    .insert({
+      branch_id: validated.branch_id,
+      status: 'open',
+      notes: validated.notes,
+    })
+    .select()
+    .single();
+
+  if (sessionError) throw new Error(sessionError.message);
+
+  return session;
+}
+
+export async function countStockOpname(input: StockOpnameCountInput) {
+  const validated = stockOpnameCountSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: session, error: sessionError } = await supabase
+    .from('stock_opname_sessions')
+    .select('*, branch_id')
+    .eq('id', validated.session_id)
+    .in('status', ['open', 'counting'])
+    .single();
+
+  if (sessionError) throw new Error('Sesi opname tidak ditemukan atau sudah ditutup.');
+
+  const { data: balance, error: balanceError } = await supabase
+    .from('stock_balances')
+    .select('quantity')
+    .eq('branch_id', session.branch_id)
+    .eq('product_id', validated.product_id)
+    .single();
+
+  if (balanceError && balanceError.code !== 'PGRST116') throw balanceError;
+
+  const systemQuantity = balance?.quantity ?? 0;
+
+  const { data: detail, error: detailError } = await supabase
+    .from('stock_opname_details')
+    .upsert(
+      {
+        session_id: validated.session_id,
+        product_id: validated.product_id,
+        system_quantity: systemQuantity,
+        counted_quantity: validated.counted_quantity,
+      },
+      { onConflict: 'session_id, product_id' }
+    )
+    .select()
+    .single();
+
+  if (detailError) throw new Error(detailError.message);
+
+  if (session.status === 'open') {
+    await supabase
+      .from('stock_opname_sessions')
+      .update({ status: 'counting', updated_at: new Date().toISOString() })
+      .eq('id', validated.session_id);
+  }
+
+  return detail;
+}
+
+export async function closeStockOpnameSession(input: StockOpnameCloseInput) {
+  const validated = stockOpnameCloseSchema.parse(input);
+  const supabase = await createServerClient();
+
+  const { data: session, error: sessionError } = await supabase
+    .from('stock_opname_sessions')
+    .select('*, branch_id')
+    .eq('id', validated.session_id)
+    .eq('status', 'counting')
+    .single();
+
+  if (sessionError) throw new Error('Sesi opname tidak ditemukan atau belum dalam status counting.');
+
+  const { data: details, error: detailsError } = await supabase
+    .from('stock_opname_details')
+    .select('*')
+    .eq('session_id', validated.session_id);
+
+  if (detailsError) throw new Error(detailsError.message);
+
+  for (const detail of details ?? []) {
+    if (detail.difference === 0) continue;
+
+    const { data: balance, error: balanceError } = await supabase
+      .from('stock_balances')
+      .select('quantity')
+      .eq('branch_id', session.branch_id)
+      .eq('product_id', detail.product_id)
+      .single();
+
+    if (balanceError && balanceError.code !== 'PGRST116') throw balanceError;
+
+    const newQuantity = (balance?.quantity ?? 0) + detail.difference;
+    if (newQuantity < 0) {
+      throw new Error(
+        `Stok tidak cukup untuk ${detail.product_id}. Opname akan menyebabkan stok minus.`
+      );
+    }
+
+    await supabase
+      .from('stock_balances')
+      .upsert(
+        {
+          branch_id: session.branch_id,
+          product_id: detail.product_id,
+          quantity: newQuantity,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'branch_id, product_id' }
+      );
+
+    await supabase.from('stock_mutations').insert({
+      branch_id: session.branch_id,
+      product_id: detail.product_id,
+      mutation_type: 'adjustment',
+      quantity: detail.difference,
+      reference: `OPNAME-${validated.session_id}`,
+    });
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from('stock_opname_sessions')
+    .update({
+      status: 'closed',
+      closed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', validated.session_id)
     .select()
     .single();
 

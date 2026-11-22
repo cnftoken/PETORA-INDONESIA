@@ -26,7 +26,7 @@ Tabel BR-001 sampai BR-025 dengan kondisi, hasil, pengecualian, tes yang menguji
 | BR-020 | PPN dapat dikonfigurasi, basis poin, tagihan menyimpan salinan | `br-020-vat` | lolos (pgTAP) | 1 |
 | BR-021 | Pembulatan tagihan dapat dikonfigurasi, baris terpisah | `br-021-rounding` | lolos (pgTAP) | 1 |
 | BR-022 | Penomoran dokumen unik dan berurutan per cabang per jenis | `m03-f01-f06-klinik` | lolos (pgTAP) | 4 |
-| BR-023 | Stock opname: produk terkunci sampai sesi ditutup, selisih disetujui | `br-023-stock-opname` | belum | 4 |
+| BR-023 | Stock opname: produk terkunci sampai sesi ditutup, selisih disetujui | `m08-f07-opname` | lolos (pgTAP) | 4 |
 | BR-024 | Saat stok berkurang: finalisasi tagihan / pemberian obat / retur mengembalikan | `m08-f01-f02-stock` | lolos (pgTAP) | 5 |
 | BR-025 | Diskon hanya per baris, persen atau nominal, wajib beralasan | `br-025-discount` | belum | 5 |
 

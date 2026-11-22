@@ -266,3 +266,43 @@ export async function getStockExpiryAlerts({
   if (error) throw error;
   return { data, count };
 }
+
+export async function getStockOpnameSessions({
+  page = 1,
+  pageSize = 50,
+  branchId,
+  status,
+}: {
+  page?: number;
+  pageSize?: number;
+  branchId?: string;
+  status?: string;
+} = {}) {
+  const supabase = await createServerClient();
+  let query = supabase
+    .from('stock_opname_sessions')
+    .select('*, branches(code, name)', { count: 'exact' })
+    .order('created_at', { ascending: false });
+
+  if (branchId) query = query.eq('branch_id', branchId);
+  if (status) query = query.eq('status', status);
+
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  query = query.range(from, to);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data, count };
+}
+
+export async function getStockOpnameSessionById(id: string) {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('stock_opname_sessions')
+    .select('*, branches(code, name), stock_opname_details(*, products(sku, name))')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return data;
+}
