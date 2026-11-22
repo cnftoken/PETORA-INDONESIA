@@ -5,6 +5,8 @@ import { createMedicalEntry } from '@/modules/medical-records/actions';
 import { MedicalEntryForm } from '@/modules/medical-records/components/MedicalEntryForm';
 import { MedicalAttachmentUpload } from '@/modules/medical-records/components/MedicalAttachmentUpload';
 import { MedicalAttachmentList } from '@/modules/medical-records/components/MedicalAttachmentList';
+import { MedicalAddendumForm } from '@/modules/medical-records/components/MedicalAddendumForm';
+import { MedicalAddendumList } from '@/modules/medical-records/components/MedicalAddendumList';
 import type { MedicalEntryInput } from '@/modules/medical-records/schemas';
 
 export function MedicalEntryFormWrapper({
@@ -42,15 +44,27 @@ export function MedicalEntryFormWrapper({
       )}
       <MedicalEntryForm initialData={initialData} onSubmit={onSubmit} />
       {createdEntry && (
-        <div className="mt-6">
-          <h2 className="text-17 font-semibold mb-3">Lampiran Medis</h2>
-          <MedicalAttachmentUpload
-            examinationId={createdEntry.id}
-            onUploadSuccess={() => {
-              // refresh list handled by re-render
-            }}
-          />
-          <MedicalAttachmentList examinationId={createdEntry.id} />
+        <div className="mt-6 space-y-6">
+          <section>
+            <h2 className="text-17 font-semibold mb-3">Lampiran Medis</h2>
+            <MedicalAttachmentUpload
+              examinationId={createdEntry.id}
+              onUploadSuccess={() => {
+                // refresh list handled by re-render
+              }}
+            />
+            <MedicalAttachmentList examinationId={createdEntry.id} />
+          </section>
+          <section>
+            <h2 className="text-17 font-semibold mb-3">Addendum Entri Medis</h2>
+            <MedicalAddendumForm
+              examinationId={createdEntry.id}
+              onAddSuccess={() => {
+                // refresh list handled by re-render
+              }}
+            />
+            <MedicalAddendumList examinationId={createdEntry.id} />
+          </section>
         </div>
       )}
     </>

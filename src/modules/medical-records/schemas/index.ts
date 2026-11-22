@@ -34,6 +34,7 @@ export type MedicalFinalizeInput = z.infer<typeof medicalFinalizeSchema>;
 
 export const medicalAddendumSchema = z.object({
   examination_id: z.string().uuid('Entri medis wajib dipilih'),
+  reason: z.string().min(1, 'Alasan addendum wajib diisi'),
   anamnesis: z.string().optional(),
   physical_exam: z.string().optional(),
   diagnosis: z.string().optional(),

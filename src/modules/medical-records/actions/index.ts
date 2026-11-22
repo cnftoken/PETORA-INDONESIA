@@ -61,24 +61,23 @@ export async function addMedicalAddendum(input: MedicalAddendumInput) {
   const validated = medicalAddendumSchema.parse(input);
   const supabase = await createServerClient();
 
-  // Cek entri ada dan belum final (addendum hanya untuk entri non-final atau sebagai catatan tambahan)
-  const { data: entry, error: entryError } = await supabase
-    .from('examinations')
-    .select('is_final, anamnesis, physical_exam, diagnosis, treatment_plan, weight_kg')
-    .eq('id', validated.examination_id)
-    .single();
-  if (entryError) throw new Error(entryError.message);
+  const { data: authUser, error: authError } = await supabase.auth.getUser();
+  if (authError) throw new Error(authError.message);
+  const author_id = authUser.user?.id;
+  if (!author_id) throw new Error('Pengguna tidak terautentikasi.');
 
   const { data, error } = await supabase
-    .from('examinations')
-    .update({
-      anamnesis: validated.anamnesis ?? entry.anamnesis,
-      physical_exam: validated.physical_exam ?? entry.physical_exam,
-      diagnosis: validated.diagnosis ?? entry.diagnosis,
-      treatment_plan: validated.treatment_plan ?? entry.treatment_plan,
-      weight_kg: validated.weight_kg ?? entry.weight_kg,
+    .from('medical_addenda')
+    .insert({
+      examination_id: validated.examination_id,
+      author_id,
+      reason: validated.reason,
+      anamnesis: validated.anamnesis,
+      physical_exam: validated.physical_exam,
+      diagnosis: validated.diagnosis,
+      treatment_plan: validated.treatment_plan,
+      weight_kg: validated.weight_kg,
     })
-    .eq('id', validated.examination_id)
     .select()
     .single();
   if (error) throw new Error(error.message);
@@ -178,4 +177,11 @@ export async function getMedicalAttachmentsAction(examinationId: string) {
     '@/modules/medical-records/queries'
   );
   return getAttachments(examinationId);
+}
+
+export async function getMedicalAddendaAction(examinationId: string) {
+  const { getMedicalAddenda: getAddenda } = await import(
+    '@/modules/medical-records/queries'
+  );
+  return getAddenda(examinationId);
 }

@@ -92,3 +92,14 @@ export async function getMedicalAttachmentById(id: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getMedicalAddenda(examinationId: string) {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('medical_addenda')
+    .select('*, users(full_name)')
+    .eq('examination_id', examinationId)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
