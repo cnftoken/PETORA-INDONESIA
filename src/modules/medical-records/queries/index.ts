@@ -45,3 +45,28 @@ export async function getMedicalEntryById(id: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getDiagnosisSuggestions({
+  search,
+  limit = 10,
+}: {
+  search?: string;
+  limit?: number;
+} = {}) {
+  const supabase = await createServerClient();
+  let query = supabase
+    .from('examinations')
+    .select('diagnosis')
+    .not('diagnosis', 'is', null)
+    .neq('diagnosis', '')
+    .order('diagnosis', { ascending: true });
+
+  if (search) query = query.ilike('diagnosis', `%${search}%`);
+
+  const { data, error } = await query.limit(limit);
+  if (error) throw error;
+
+  // Ambil diagnosis unik
+  const uniqueDiagnoses = Array.from(new Set((data ?? []).map((row) => row.diagnosis)));
+  return uniqueDiagnoses;
+}

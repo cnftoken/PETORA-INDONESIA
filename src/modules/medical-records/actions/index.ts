@@ -82,3 +82,13 @@ export async function addMedicalAddendum(input: MedicalAddendumInput) {
   if (error) throw new Error(error.message);
   return data;
 }
+
+export async function getDiagnosisSuggestions(input: {
+  search?: string;
+  limit?: number;
+}) {
+  const { getDiagnosisSuggestions: getSuggestions } = await import(
+    '@/modules/medical-records/queries'
+  );
+  return getSuggestions(input);
+}
