@@ -40,7 +40,7 @@
 
 | ID | Fitur | Deskripsi | Kriteria selesai | Status | Lokasi kode | Nama tes |
 |---|---|---|---|---|---|---|
-| M04-F01 | Entri medis | Anamnesis dan pemeriksaan fisik terstruktur per kunjungan. Hanya Dokter. Draft tersimpan otomatis. Berat terbaru perbarui profil hewan. | Entri medis bisa dibuat, draft otomatis | belum | `src/modules/medical-records/` | `br-004-medical-entry-lock` |
+| M04-F01 | Entri medis | Anamnesis dan pemeriksaan fisik terstruktur per kunjungan. Hanya Dokter. Draft tersimpan otomatis. Berat terbaru perbarui profil hewan. | Entri medis bisa dibuat, draft otomatis | siap | `src/modules/medical-records/` | `m04-f01-medical-entry` |
 | M04-F02 | Diagnosis dan rencana terapi | Diagnosis teks dengan saran yang pernah dipakai, rencana terapi. Diagnosis bisa dicari. Tanpa kode eksternal. | Diagnosis dan rencana tersimpan | belum | `src/modules/medical-records/` | `br-004-medical-entry-lock` |
 | M04-F03 | Lampiran medis | Hasil lab, foto, dokumen. Tipe/ukuran sama M02-F05. Akses mengikuti permission medis. | Lampiran medis tersimpan dan diakses | belum | `src/modules/medical-records/` | `br-004-medical-entry-lock` |
 | M04-F04 | Penguncian entri | Finalisasi mengunci entri. Upaya mengubah entri final ditolak di database. | Entri final tidak bisa diubah | belum | `src/modules/medical-records/` | `br-004-medical-entry-lock` |
